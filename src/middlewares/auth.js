@@ -7,8 +7,10 @@ export const verifyToken = (req, res, next) => {
 
     // verify token
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(403).json({message: 'invalid token'})
-        req.userId = decoded.id;
+        if (err) {
+            return res.status(403).json({message: 'invalid token'}) // forbidden
+        }
+        req.userId = decoded.id; // get userId from token
         next();
     })
 }

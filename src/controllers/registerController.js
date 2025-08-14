@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator';
-import bcrypt from 'bcrypt'
-import { prisma } from '../src/client/index.js';
+import { prisma } from '../client/index.js';
+import bcrypt from 'bcrypt';
+
 
 // register function 
 export const register = async (req, res) => {
@@ -20,10 +21,25 @@ export const register = async (req, res) => {
     }
 
     // hash password
-    const hashedPassword = await bcrypt.hash(password, 10,)
+    const hashedPassword = await bcrypt.hash(password, 10)
 
-    // create user
     try {
+
+        // check user exist
+        const userExists = await prisma.user.findUnique({
+            where: {
+                email
+            }
+        });
+
+        if (userExists) {
+            return res.status(409).json({
+                success: false,
+                message: "user already exists"
+            })
+        }
+
+        // create user
         const user = await prisma.user.create({
             data: {
                 name,
@@ -31,12 +47,16 @@ export const register = async (req, res) => {
                 password: hashedPassword
             }
         })
+        
+        // user without password
+        delete user.password;
+        const userWithoutPassword = user;
 
         // return success response
         res.status(201).json({
             success: true,
             message: 'registration successful',
-            data: user
+            data: userWithoutPassword
         })
 
     } catch (error) {
