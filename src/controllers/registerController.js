@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 
 // register function 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
 
     const { name, email, password } = req.body;
 
@@ -52,6 +52,13 @@ export const register = async (req, res) => {
         delete user.password;
         const userWithoutPassword = user;
 
+        // send cookie
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            sameSite: 'Lax',
+            secure: process.env.NODE_ENV === 'production' // use secure cookies in production
+        })
+
         // return success response
         res.status(201).json({
             success: true,
@@ -65,5 +72,6 @@ export const register = async (req, res) => {
             message: 'registration failed',
             error: error.message
         })
+        next(error)
     }
 }

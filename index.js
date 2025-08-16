@@ -1,6 +1,7 @@
 import express from 'express';
 import router from './src/routes/index.js';
 import cors from 'cors';
+import { errorHandlerMiddleware } from './src/middlewares/errorHandler.js';
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.get('/', (req, res) => {
 
 // routes
 app.use("/api", router)
+
+// error handling middleware
+app.use(errorHandlerMiddleware);
 
 
 app.listen(3000, () => {

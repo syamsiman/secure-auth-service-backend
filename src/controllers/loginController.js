@@ -1,10 +1,11 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'
 import { validationResult } from 'express-validator';
 import { prisma } from '../client/index.js';
+import { generateAccessToken, generateRefreshToken } from '../utils/tokens/token.js';
+
 
 // login function
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // check validation result
@@ -20,6 +21,7 @@ export const login = async (req, res) => {
     }
 
     try {
+        // check if user exists
         const user = await prisma.user.findUnique({
             where: {
                 email
@@ -32,8 +34,7 @@ export const login = async (req, res) => {
             }
         })
 
-        // check if user exists
-        if (!user) {
+        if (!user || !user.password) {
             return res.status(404).json({
                 success: false,
                 message: 'User not found'
@@ -50,14 +51,29 @@ export const login = async (req, res) => {
             })
         }
 
-        // generate token jwt
-        const token = jwt.sign({ id: user.id}, process.env.JWT_SECRET, {
-            expiresIn: '1h'
+        // generate tokens
+        const accessToken = generateAccessToken(user)
+        const refreshToken = generateRefreshToken(user)
+
+        // store refresh token in db
+        await prisma.refreshToken.create({
+            data: {
+                token: refreshToken,
+                userId: user.id
+            }
         })
 
         // user without password
         delete user.password;
         const userWithoutPassword = user;
+
+        // send refresh token as http-only cookie
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // use secure cookies in production
+            sameSite: 'Strict', // prevent CSRF attacks
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        })
 
         // return success response
         res.status(200).json({
@@ -65,7 +81,7 @@ export const login = async (req, res) => {
             message: 'login successful',
             data: {
                 user: userWithoutPassword,
-                token
+                accessToken,
             }
         })
 
@@ -75,5 +91,6 @@ export const login = async (req, res) => {
             message: 'login failed',
             error: error.message
         })
+        next(error);
     }
 }
