@@ -28,8 +28,9 @@ model User {
 
 model RefreshToken {
   id        Int      @id @default(autoincrement())
-  token     String   @unique
-  userId    Int      
+  token     String  @db.VarChar(255)  @unique
+  userId    Int  
+  sessionId String //  column to check family token    
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }

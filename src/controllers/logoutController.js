@@ -1,3 +1,5 @@
+import { prisma } from "../client/index.js";
+
 export const logout = async (req, res, next) => {
     // verify user is authenticated
     const refreshToken = req.cookies.refreshToken;

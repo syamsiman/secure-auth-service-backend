@@ -133,6 +133,7 @@ exports.Prisma.RefreshTokenScalarFieldEnum = {
   id: 'id',
   token: 'token',
   userId: 'userId',
+  sessionId: 'sessionId',
   createdAt: 'createdAt'
 };
 
@@ -153,7 +154,8 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
 };
 
 exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
-  token: 'token'
+  token: 'token',
+  sessionId: 'sessionId'
 };
 
 

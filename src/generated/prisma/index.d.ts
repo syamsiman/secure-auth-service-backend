@@ -1987,6 +1987,7 @@ export namespace Prisma {
     id: number | null
     token: string | null
     userId: number | null
+    sessionId: string | null
     createdAt: Date | null
   }
 
@@ -1994,6 +1995,7 @@ export namespace Prisma {
     id: number | null
     token: string | null
     userId: number | null
+    sessionId: string | null
     createdAt: Date | null
   }
 
@@ -2001,6 +2003,7 @@ export namespace Prisma {
     id: number
     token: number
     userId: number
+    sessionId: number
     createdAt: number
     _all: number
   }
@@ -2020,6 +2023,7 @@ export namespace Prisma {
     id?: true
     token?: true
     userId?: true
+    sessionId?: true
     createdAt?: true
   }
 
@@ -2027,6 +2031,7 @@ export namespace Prisma {
     id?: true
     token?: true
     userId?: true
+    sessionId?: true
     createdAt?: true
   }
 
@@ -2034,6 +2039,7 @@ export namespace Prisma {
     id?: true
     token?: true
     userId?: true
+    sessionId?: true
     createdAt?: true
     _all?: true
   }
@@ -2128,6 +2134,7 @@ export namespace Prisma {
     id: number
     token: string
     userId: number
+    sessionId: string
     createdAt: Date
     _count: RefreshTokenCountAggregateOutputType | null
     _avg: RefreshTokenAvgAggregateOutputType | null
@@ -2154,6 +2161,7 @@ export namespace Prisma {
     id?: boolean
     token?: boolean
     userId?: boolean
+    sessionId?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["refreshToken"]>
@@ -2164,10 +2172,11 @@ export namespace Prisma {
     id?: boolean
     token?: boolean
     userId?: boolean
+    sessionId?: boolean
     createdAt?: boolean
   }
 
-  export type RefreshTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "token" | "userId" | "createdAt", ExtArgs["result"]["refreshToken"]>
+  export type RefreshTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "token" | "userId" | "sessionId" | "createdAt", ExtArgs["result"]["refreshToken"]>
   export type RefreshTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -2181,6 +2190,7 @@ export namespace Prisma {
       id: number
       token: string
       userId: number
+      sessionId: string
       createdAt: Date
     }, ExtArgs["result"]["refreshToken"]>
     composites: {}
@@ -2555,6 +2565,7 @@ export namespace Prisma {
     readonly id: FieldRef<"RefreshToken", 'Int'>
     readonly token: FieldRef<"RefreshToken", 'String'>
     readonly userId: FieldRef<"RefreshToken", 'Int'>
+    readonly sessionId: FieldRef<"RefreshToken", 'String'>
     readonly createdAt: FieldRef<"RefreshToken", 'DateTime'>
   }
     
@@ -2947,6 +2958,7 @@ export namespace Prisma {
     id: 'id',
     token: 'token',
     userId: 'userId',
+    sessionId: 'sessionId',
     createdAt: 'createdAt'
   };
 
@@ -2979,7 +2991,8 @@ export namespace Prisma {
 
 
   export const RefreshTokenOrderByRelevanceFieldEnum: {
-    token: 'token'
+    token: 'token',
+    sessionId: 'sessionId'
   };
 
   export type RefreshTokenOrderByRelevanceFieldEnum = (typeof RefreshTokenOrderByRelevanceFieldEnum)[keyof typeof RefreshTokenOrderByRelevanceFieldEnum]
@@ -3091,6 +3104,7 @@ export namespace Prisma {
     id?: IntFilter<"RefreshToken"> | number
     token?: StringFilter<"RefreshToken"> | string
     userId?: IntFilter<"RefreshToken"> | number
+    sessionId?: StringFilter<"RefreshToken"> | string
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -3099,6 +3113,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    sessionId?: SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
     _relevance?: RefreshTokenOrderByRelevanceInput
@@ -3111,6 +3126,7 @@ export namespace Prisma {
     OR?: RefreshTokenWhereInput[]
     NOT?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
     userId?: IntFilter<"RefreshToken"> | number
+    sessionId?: StringFilter<"RefreshToken"> | string
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "token">
@@ -3119,6 +3135,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    sessionId?: SortOrder
     createdAt?: SortOrder
     _count?: RefreshTokenCountOrderByAggregateInput
     _avg?: RefreshTokenAvgOrderByAggregateInput
@@ -3134,6 +3151,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"RefreshToken"> | number
     token?: StringWithAggregatesFilter<"RefreshToken"> | string
     userId?: IntWithAggregatesFilter<"RefreshToken"> | number
+    sessionId?: StringWithAggregatesFilter<"RefreshToken"> | string
     createdAt?: DateTimeWithAggregatesFilter<"RefreshToken"> | Date | string
   }
 
@@ -3203,6 +3221,7 @@ export namespace Prisma {
 
   export type RefreshTokenCreateInput = {
     token: string
+    sessionId: string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutRefreshTokensInput
   }
@@ -3211,11 +3230,13 @@ export namespace Prisma {
     id?: number
     token: string
     userId: number
+    sessionId: string
     createdAt?: Date | string
   }
 
   export type RefreshTokenUpdateInput = {
     token?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutRefreshTokensNestedInput
   }
@@ -3224,6 +3245,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     token?: StringFieldUpdateOperationsInput | string
     userId?: IntFieldUpdateOperationsInput | number
+    sessionId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -3231,11 +3253,13 @@ export namespace Prisma {
     id?: number
     token: string
     userId: number
+    sessionId: string
     createdAt?: Date | string
   }
 
   export type RefreshTokenUpdateManyMutationInput = {
     token?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -3243,6 +3267,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     token?: StringFieldUpdateOperationsInput | string
     userId?: IntFieldUpdateOperationsInput | number
+    sessionId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -3435,6 +3460,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    sessionId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -3447,6 +3473,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    sessionId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -3454,6 +3481,7 @@ export namespace Prisma {
     id?: SortOrder
     token?: SortOrder
     userId?: SortOrder
+    sessionId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -3680,12 +3708,14 @@ export namespace Prisma {
 
   export type RefreshTokenCreateWithoutUserInput = {
     token: string
+    sessionId: string
     createdAt?: Date | string
   }
 
   export type RefreshTokenUncheckedCreateWithoutUserInput = {
     id?: number
     token: string
+    sessionId: string
     createdAt?: Date | string
   }
 
@@ -3722,6 +3752,7 @@ export namespace Prisma {
     id?: IntFilter<"RefreshToken"> | number
     token?: StringFilter<"RefreshToken"> | string
     userId?: IntFilter<"RefreshToken"> | number
+    sessionId?: StringFilter<"RefreshToken"> | string
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
   }
 
@@ -3778,23 +3809,27 @@ export namespace Prisma {
   export type RefreshTokenCreateManyUserInput = {
     id?: number
     token: string
+    sessionId: string
     createdAt?: Date | string
   }
 
   export type RefreshTokenUpdateWithoutUserInput = {
     token?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RefreshTokenUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     token?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RefreshTokenUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     token?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
