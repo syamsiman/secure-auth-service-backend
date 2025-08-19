@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from '../client/index.js';
 import { generateRefreshToken } from '../utils/tokens/token.js';
+import { ErrorResponse } from '../utils/custom-response/ErrorResponse.js';
 
 export default class TokenService {
     static async rotateRefreshToken(oldToken, sessionId, userId) {
@@ -27,10 +28,16 @@ export default class TokenService {
         });
 
         if (!storedToken) {
-            throw new Error('Invalid refresh token');
+            throw new ErrorResponse(403, 'Invalid refresh token');
         }
 
         return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    }
+
+    static async removeToken(token) {
+        return await prisma.refreshToken.delete({
+            where: { token }
+        })
     }
 
     static setCookieOptions() {

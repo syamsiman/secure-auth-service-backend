@@ -7,15 +7,22 @@ export const logout = async (req, res, next) => {
     if (!refreshToken) {
         return res.status(401).json({
             success: false,
-            message: 'No refresh token provided'
+            message: 'user already logged out'
         });
     }
 
     try {
-         // delete the refresh token from the database
-        await prisma.refreshToken.deleteMany({
-            where: { userId: req.userId }
+         
+        const storedToken = await prisma.refreshToken.findUnique({
+            where: { token: refreshToken }
         })
+
+        if (storedToken) {
+            // delete the refresh token from the database
+            await prisma.refreshToken.deleteMany({
+                where: { userId: req.userId }
+            })
+        }
 
         res.clearCookie('refreshToken', { 
             httpOnly: true, 

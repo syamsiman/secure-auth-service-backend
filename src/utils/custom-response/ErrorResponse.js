@@ -1,8 +1,8 @@
-export class ApiResponse extends Error {
+export class ErrorResponse extends Error {
     constructor(statusCode, message) {
         super(message);
         this.statusCode = statusCode;
-        this.status = `${statusCode}`.startsWith('4') ? 'fail' : `${statusCode}`.startsWith('2') ? 'success' : 'error';
+        this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
 
         Error.captureStackTrace(this, this.constructor);
     }

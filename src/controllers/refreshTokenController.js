@@ -1,17 +1,17 @@
 import TokenService from '../services/tokenService.js';
+import { ErrorResponse } from '../utils/custom-response/ErrorResponse.js';
 import { generateAccessToken } from '../utils/tokens/token.js';
 
 export const refreshToken = async (req, res) => {
-    try {
-        const refreshToken = req.cookies.refreshToken;
-        
-        if (!refreshToken) {
-            return res.status(401).json({
-                success: false,
-                message: "No refresh token provided"
-            });
-        }
-
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        return res.status(401).json({
+            success: false,
+            message: "No refresh token provided"
+        });
+    }
+    
+    try {    
         // Validate and decode token
         const decoded = await TokenService.validateRefreshToken(refreshToken);
         
@@ -35,14 +35,10 @@ export const refreshToken = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Refresh Token Error:', error);
-        
-        if (error.message === 'Invalid refresh token') {
-            return res.status(403).json({
-                success: false,
-                message: error.message
-            });
-        }
+        next(error);
+
+        // remove conflicted token
+        await TokenService.removeToken(refreshToken);
 
         return res.status(500).json({
             success: false,

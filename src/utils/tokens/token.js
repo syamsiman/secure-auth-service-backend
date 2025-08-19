@@ -10,7 +10,7 @@ export const generateAccessToken = (user) => {
 }
 
 export const generateRefreshToken = (user) => {
-    return jwt.sign({ id: user.id, sessionId: user.sessionId || "" }, process.env.REFRESH_TOKEN_SECRET, {
+    return jwt.sign({ id: user.id, sessionId: user.sessionId }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: REFRESH_TOKEN_TTL
     })
 }

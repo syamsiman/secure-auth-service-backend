@@ -1,7 +1,7 @@
-import { ApiResponse } from "../utils/custom-response/apiResponse.js";
+import { ErrorResponse } from "../utils/custom-response/ErrorResponse.js";
 
 export const errorHandlerMiddleware = (err, req, res, next) => {
-  if (err instanceof ApiResponse) {
+  if (err instanceof ErrorResponse) {
     return res.status(err.statusCode).json({
       success: false,
       status: err.status,
