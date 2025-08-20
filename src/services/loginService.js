@@ -50,7 +50,7 @@ class LoginService {
         })
 
         if (!user || !user.password) {
-            throw new ErrorResponse(404, 'user not found or password not provided')
+            throw new ErrorResponse(404, 'invalid credentials')
         }
 
         return user;

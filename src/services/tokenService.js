@@ -8,14 +8,14 @@ export default class TokenService {
         await prisma.refreshToken.delete({
             where: { token: oldToken }
         });
-
+        // Generate a new refresh token but with the same session ID for family detection
         const newRefreshToken = generateRefreshToken({ id: userId, sessionId });
         
         await prisma.refreshToken.create({
             data: {
                 token: newRefreshToken,
                 userId,
-                sessionId
+                sessionId 
             }
         });
 
@@ -27,16 +27,26 @@ export default class TokenService {
             where: { token }
         });
 
+         
+        // detect replay attack
         if (!storedToken) {
-            throw new ErrorResponse(403, 'Invalid refresh token');
+            let decoded;
+            try {
+                decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+            } catch (error) {
+                throw new ErrorResponse(403, 'invalid or expired refresh token')
+            }
+            // remove all family token
+            await this.removeSession(decoded.userId, decoded.sessionId)
+            throw new ErrorResponse(403, 'Token has been revoked or reused, Invalid refresh token');
         }
-
-        return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+        5
+        return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);;
     }
 
-    static async removeToken(token) {
-        return await prisma.refreshToken.delete({
-            where: { token }
+    static async removeSession(userId, sessionId) {
+        await prisma.refreshToken.deleteMany({
+            where: { userId, sessionId }
         })
     }
 
@@ -49,3 +59,4 @@ export default class TokenService {
         };
     }
 }
+

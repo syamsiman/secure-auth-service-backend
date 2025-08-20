@@ -1,8 +1,7 @@
 import TokenService from '../services/tokenService.js';
-import { ErrorResponse } from '../utils/custom-response/ErrorResponse.js';
 import { generateAccessToken } from '../utils/tokens/token.js';
 
-export const refreshToken = async (req, res) => {
+export const refreshToken = async (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         return res.status(401).json({
@@ -36,9 +35,6 @@ export const refreshToken = async (req, res) => {
 
     } catch (error) {
         next(error);
-
-        // remove conflicted token
-        await TokenService.removeToken(refreshToken);
 
         return res.status(500).json({
             success: false,
