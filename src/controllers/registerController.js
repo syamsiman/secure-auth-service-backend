@@ -2,22 +2,22 @@ import { validationResult } from 'express-validator';
 import RegisterService from '../services/registerService.js';
 
 export const register = async (req, res, next) => {
-    // check validation result
-    const result = validationResult(req);
-
-    if(!result.isEmpty()) {
-        return res.status(422).json({
-            success: false,
-            message: 'validation error',
-            error: result.array()
-        })
-    }
-
     try {
-        const isUserExist = await RegisterService.validateUser(req.body);
+        // check validation result
+        const result = validationResult(req);
+
+        if(!result.isEmpty()) {
+            return res.status(422).json({
+                success: false,
+                message: 'validation error',
+                error: result.array()
+            })
+        }
+        
+        const isUserExist = await RegisterService.validateUser(req.body.email);
 
         if (isUserExist) {
-            return res.status(403).json({
+            return res.status(409).json({ //conflict
                 success: false,
                 message: "user already exist",
             })
