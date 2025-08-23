@@ -15,6 +15,7 @@ import Register from "../views/auth/register.jsx";
 
 //import view login
 import Login from "../views/auth/login.jsx";
+import Dashboard from '../views/user/Dashboard.jsx';
 
 export default function AppRoutes() {
 
@@ -35,6 +36,9 @@ export default function AppRoutes() {
             <Route path="/login" element={
                 isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <Login />
             } />
+
+            {/* route "/dashboard" */}
+            <Route path='/dashboard' element={<Dashboard />} />
         </Routes>
     );
 }

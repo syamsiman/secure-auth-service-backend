@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from '../../services/api'
 
 export default function Register() {
-    const navigate = useNavigate(); // Changed to lowercase as per convention
+    const Navigate = useNavigate(); // Changed to lowercase as per convention
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -20,12 +20,12 @@ export default function Register() {
                 password,
             });
 
-            if (response.data.success) {
-                navigate("/login");
+            if (response.data.status === "success") {
+                Navigate("/login");
             }
         } catch (error) {
             console.log(error);
-            if (error.response && error.response.status === 422) {
+            if (error.response && error.response.status === "fail") {
                 setValidation({
                     errors: error.response.data.error || []
                 });
@@ -43,16 +43,17 @@ export default function Register() {
                         {validation.errors.length > 0 && (
                             <div className="alert alert-danger">
                                 {validation.errors.map((error, index) => (
-                                    <p key={index} className="mb-0">
+                                    <h6 key={index} className="mb-0">
                                         {`${error.path}: ${error.msg}`}
-                                    </p>
+                                    </h6>
                                 ))}
                             </div>
                         )}
                         <form onSubmit={register}>
                             <div className="mb-3">
-                                <label className="form-label fw-bold">Full Name</label>
+                                <label for="name" className="form-label fw-bold">Full Name</label>
                                 <input 
+                                    id="name"
                                     type="text" 
                                     className="form-control" 
                                     value={name} 
@@ -61,8 +62,9 @@ export default function Register() {
                                 />
                             </div>
                             <div className="mb-3">
-                                <label className="form-label fw-bold">Email address</label>
+                                <label for="email" className="form-label fw-bold">Email address</label>
                                 <input 
+                                    id="email"
                                     type="email" 
                                     className="form-control" 
                                     value={email} 
@@ -71,8 +73,9 @@ export default function Register() {
                                 />
                             </div>
                             <div className="mb-3">
-                                <label className="form-label fw-bold">Password</label>
+                                <label for="password" className="form-label fw-bold">Password</label>
                                 <input 
+                                    id="password"
                                     type="password" 
                                     className="form-control" 
                                     value={password} 
