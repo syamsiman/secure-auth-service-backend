@@ -6,13 +6,13 @@ export class UserController {
         try {
             const users = await UserService.findUsers(req.query.name);
             return res.status(200).json({
-                success: true,
+                status: "success",
                 message: "users retrieved successfully",
                 data: users
             })
         } catch (error) {
             return res.status(500).json({
-                success: false,
+                status: "fail",
                 message: 'failed to retrieved users',
                 error: error.message
             })
@@ -25,20 +25,20 @@ export class UserController {
 
             if (!user) {
                 return res.status(404).json({
-                    success: false,
+                    status: "fail",
                     message: 'user not found'
                 })
             }
 
             return res.status(200).json({
-                success: true,
+                status: "success",
                 message: 'user retrieved successfully',
                 data: user
             });
 
         } catch (error) {
             return res.status(500).json({
-                success: false,
+                status: "fail",
                 message: 'failed to retrieve user',
                 error: error.message
             });
@@ -49,7 +49,7 @@ export class UserController {
         const result = validationResult(req);
         if (!result.isEmpty()) {
             return res.status(400).json({
-                success: false,
+                status: "fail",
                 message: 'Validation failed',
                 errors: result.array()
             });
@@ -60,19 +60,19 @@ export class UserController {
 
             if (!user) {
                 return res.status(404).json({
-                    success: false,
+                    status: "fail",
                     message: 'user not found'
                 });
             }
 
             return res.status(200).json({
-                success: true,
+                status: "success",
                 message: 'user updated successfully',
                 data: user
             });
         } catch (error) {
             return res.status(500).json({
-                success: false,
+                status: "fail",
                 message: 'failed to update user',
                 error: error.message
             });
@@ -83,13 +83,13 @@ export class UserController {
         try {
             const users = await UserService.getAllUsers();
             return res.status(200).json({
-                success: true,
+                status: "success",
                 message: 'users retrieved successfully',
                 data: users
             });
         } catch (error) {
             return res.status(500).json({
-                success: false,
+                status: "fail",
                 message: 'failed to retrieve users',
                 error: error.message
             });
@@ -102,19 +102,19 @@ export class UserController {
 
             if (!user) {
                 return res.status(404).json({
-                    success: false,
+                    status: "fail",
                     message: 'user not found'
                 });
             }
 
             return res.status(200).json({
-                success: true,
+                status: "success",
                 message: 'user deleted successfully',
                 data: user
             });
         } catch (error) {
             return res.status(500).json({
-                success: false,
+                status: "fail",
                 message: 'failed to delete user',
                 error: error.message
             });

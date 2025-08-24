@@ -9,7 +9,7 @@ export const login = async (req, res, next) => {
     // if there is error
     if (!result.isEmpty()) {
         return res.status(422).json({
-            success: false,
+            status: "fail",
             message: 'validation error',
             error: result.array()
         })
@@ -32,7 +32,7 @@ export const login = async (req, res, next) => {
 
        // send response
        res.status(200).json({
-           success: true,
+           status: "success",
            message: 'login successful',
            data: {
                user: userWithoutPassword,
@@ -42,7 +42,7 @@ export const login = async (req, res, next) => {
 
     } catch (error) {
         res.status(500).json({
-            success: false,
+            status: "fail",
             message: 'login failed',
             error: error.message
         })

@@ -3,7 +3,7 @@ import { ErrorResponse } from "../utils/custom-response/ErrorResponse.js";
 export const errorHandlerMiddleware = (err, req, res, next) => {
   if (err instanceof ErrorResponse) {
     return res.status(err.statusCode).json({
-      success: false,
+      status: "fail",
       status: err.status,
       message: err.message
     })
@@ -11,8 +11,9 @@ export const errorHandlerMiddleware = (err, req, res, next) => {
 
   // handle unexpected errors
   console.error(err);
-  return res.status(500).json({ 
-    success: false, 
+  res.status(500).json({ 
+    status: "fail", 
     status: 'error', 
-    message: 'Internal Server Error' });
+    message: 'Internal Server Error' 
+  });
 };

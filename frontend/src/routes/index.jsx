@@ -16,6 +16,8 @@ import Register from "../views/auth/register.jsx";
 //import view login
 import Login from "../views/auth/login.jsx";
 import Dashboard from '../views/user/Dashboard.jsx';
+import Welcome from '../views/user/Welcome.jsx';
+import Users from '../views/user/Users.jsx';
 
 export default function AppRoutes() {
 
@@ -29,16 +31,19 @@ export default function AppRoutes() {
 
             {/* route "/register" */}
             <Route path="/register" element={
-                isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <Register />
+                isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />
             } />
 
             {/* route "/login" */}
             <Route path="/login" element={
-                isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <Login />
+                isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
             } />
 
             {/* route "/dashboard" */}
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/dashboard' element={<Dashboard />}>
+                <Route index element={<Welcome />} />
+                <Route path='users' element={<Users />} />
+            </Route>
         </Routes>
     );
 }

@@ -5,7 +5,7 @@ export const refreshToken = async (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         return res.status(401).json({
-            success: false,
+            status: "fail",
             message: "No refresh token provided"
         });
     }
@@ -28,7 +28,7 @@ export const refreshToken = async (req, res, next) => {
         res.cookie('refreshToken', newRefreshToken, TokenService.setCookieOptions());
 
         return res.json({
-            success: true,
+            status: "success",
             message: "Token refreshed successfully",
             accessToken: newAccessToken
         });
@@ -37,7 +37,7 @@ export const refreshToken = async (req, res, next) => {
         next(error);
 
         return res.status(500).json({
-            success: false,
+            status: "fail",
             message: "Something went wrong while refreshing token"
         });
     }

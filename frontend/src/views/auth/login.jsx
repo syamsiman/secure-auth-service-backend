@@ -1,45 +1,95 @@
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 import { AuthContext } from '../../context/AuthContext'
-import { useContext, useState } from "react";
-import Api from "../../services/api";
-import Cookies from "js-cookie";
+import { useContext, useState } from "react"
+import Api from "../../services/api"
+import Cookies from "js-cookie"
 
 export default function Login() {
-
-    const Navigate = useNavigate();
-    // destructure context
+    const navigate = useNavigate() // lowercase as per convention
     const { setIsAuthenticated } = useContext(AuthContext)
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    // Form states
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    })
+    const [isLoading, setIsLoading] = useState(false)
+    const [errors, setErrors] = useState({
+        validation: [],
+        login: null
+    })
 
-    const [validation, setValidation] = useState({errors: []})
-    const [loginFailed, setLoginFailed] = useState([])
+    // Handle input changes
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+        // Clear errors when user types
+        setErrors(prev => ({
+            ...prev,
+            validation: prev.validation.filter(error => error.path !== name),
+            login: null
+        }))
+    }
 
-    const login = async (e) => {
-        e.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault()
+        setIsLoading(true)
+        setErrors({ validation: [], login: null })
 
         try {
-            const response = await Api.post("/api/auth/login", {
-                email,
-                password
-            });
-
-            if (response.status === 200) {
-                // set token and user to cookie
-                Cookies.set("token", response.data.data.accessToken)
-                Cookies.set("user", JSON.stringify(response.data.data.user))
+            const response = await Api.post("/api/auth/login", formData)
+            
+            if (response.data.success) {
+                // Store tokens securely
+                const { accessToken, user } = response.data.data
+                
+                // Set HTTP-only cookie for refresh token (handled by backend)
+                // Store access token in memory or secure cookie
+                Cookies.set("token", accessToken, { 
+                    secure: true,
+                    sameSite: 'strict'
+                })
+                
+                // Store minimal user info
+                Cookies.set("user", JSON.stringify({
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
+                }))
 
                 setIsAuthenticated(true)
-
-                Navigate("/dashboard", { replace: true })
+                navigate("/dashboard", { replace: true })
             }
-
         } catch (error) {
-            setValidation({ errors: error.response.data.error })
-            setLoginFailed(error.response.data)
-        }
+            if (error.response) {
+                const { status, data } = error.response
 
+                switch (status) {
+                    case 422: // Validation error
+                        setErrors(prev => ({
+                            ...prev,
+                            validation: data.error || []
+                        }))
+                        break
+                    case 401: // Invalid credentials
+                        setErrors(prev => ({
+                            ...prev,
+                            login: "Invalid email or password"
+                        }))
+                        break
+                    default:
+                        setErrors(prev => ({
+                            ...prev,
+                            login: "An error occurred. Please try again."
+                        }))
+                }
+            }
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -49,40 +99,63 @@ export default function Login() {
                     <div className="card-body">
                         <h4>LOGIN</h4>
                         <hr />
-                        {
-                            validation.errors && typeof validation.errors === 'string' ? <p className="alert alert-danger">{validation.errors}</p>
-                            : (
-                                <div>
-                                    {
-                                        validation.errors.map((error, index) => (
-                                            <div key={index} className="alert alert-danger mt-2 pb-0">
-                                                <p>{error.path} : {error.msg}</p>
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                            )
-                        }
+                        
+                        {/* Display validation errors */}
+                        {errors.validation.length > 0 && (
+                            <div className="alert alert-danger">
+                                {errors.validation.map((error, index) => (
+                                    <p key={index} className="mb-0">
+                                        {error.msg}
+                                    </p>
+                                ))}
+                            </div>
+                        )}
 
-                        {
-                            loginFailed.message && (
-                                <div className="alert alert-danger mt-2">
-                                    {loginFailed.message}
-                                </div>
-                            )
-                        }
-                        <form onSubmit={login}>
+                        {/* Display login error */}
+                        {errors.login && (
+                            <div className="alert alert-danger">
+                                {errors.login}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleLogin}>
                             <div className="form-group mb-3">
                                 <label className="mb-1 fw-bold">Email address</label>
-                                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" placeholder="Email Address" />
+                                <input 
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className={`form-control ${
+                                        errors.validation.find(e => e.path === 'email') ? 'is-invalid' : ''
+                                    }`}
+                                    placeholder="Email Address"
+                                    disabled={isLoading}
+                                />
                             </div>
 
                             <div className="form-group mb-3">
                                 <label className="mb-1 fw-bold">Password</label>
-                                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control"
-                                    placeholder="Password" />
+                                <input 
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className={`form-control ${
+                                        errors.validation.find(e => e.path === 'password') ? 'is-invalid' : ''
+                                    }`}
+                                    placeholder="Password"
+                                    disabled={isLoading}
+                                />
                             </div>
-                            <button type="submit" className="btn btn-primary w-100">LOGIN</button>
+
+                            <button 
+                                type="submit" 
+                                className="btn btn-primary w-100"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Logging in...' : 'LOGIN'}
+                            </button>
                         </form>
                     </div>
                 </div>

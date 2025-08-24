@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { prisma } from "../client/index.js";
 
 export const logout = async (req, res, next) => {
@@ -6,23 +7,20 @@ export const logout = async (req, res, next) => {
 
     if (!refreshToken) {
         return res.status(401).json({
-            success: false,
+            status: "fail",
             message: 'user already logged out'
         });
     }
 
     try {
          
-        const storedToken = await prisma.refreshToken.findUnique({
-            where: { token: refreshToken }
-        })
+        const decoded = jwt.verify(refreshToken, process.env.ACCESS_TOKEN_SECRET);
 
-        if (storedToken) {
-            // delete the refresh token from the database
-            await prisma.refreshToken.deleteMany({
-                where: { userId: req.userId }
-            })
-        }
+        console.log(decoded.id);
+        // delete the refresh token from the database
+        await prisma.refreshToken.deleteMany({
+            where: { userId: decoded.id }
+        })
 
         res.clearCookie('refreshToken', { 
             httpOnly: true, 
@@ -32,7 +30,7 @@ export const logout = async (req, res, next) => {
 
         // send success response
         res.status(200).json({
-            success: true,
+            status: "success",
             message: 'logout successful'
         })
     } catch (error) {
@@ -42,7 +40,7 @@ export const logout = async (req, res, next) => {
             secure: process.env.NODE_ENV === 'production'
          });
         res.status(500).json({
-            success: false,
+            status: "fail",
             message: 'logout failed',
             error: error.message
         })
