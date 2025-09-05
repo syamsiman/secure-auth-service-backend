@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from '../client/index.js';
-import { generateRefreshToken } from '../utils/tokens/token.js';
+import { generateRefreshToken } from '../utils/token.js';
 import { ErrorResponse } from '../utils/custom-response/ErrorResponse.js';
 
 export default class TokenService {

@@ -41,8 +41,9 @@ export default function Login() {
 
         try {
             const response = await Api.post("/api/auth/login", formData)
+            const isSuccess = response.status === 200
             
-            if (response.data.success) {
+            if (isSuccess) {
                 // Store tokens securely
                 const { accessToken, user } = response.data.data
                 

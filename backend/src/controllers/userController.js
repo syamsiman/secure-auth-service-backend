@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
 import { UserService } from '../services/userService.js';
 
-export class UserController {
+export default class UserController {
     static async findUsers(req, res, next) {
         try {
             const users = await UserService.findUsers(req.query.name);

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { generateAccessToken, generateRefreshToken } from "../utils/tokens/token.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import { prisma } from "../client/index.js";
 import bcrypt from 'bcrypt';
 import { ErrorResponse } from "../utils/custom-response/ErrorResponse.js";

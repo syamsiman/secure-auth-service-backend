@@ -18,7 +18,7 @@ export default class RegisterService {
                 email: userData.email,
                 password: hashedPassword,
             }
-    });
+         });
 
         const { password, ...userWithoutPassword } = user;
 

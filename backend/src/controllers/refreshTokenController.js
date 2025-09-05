@@ -1,5 +1,5 @@
 import TokenService from '../services/tokenService.js';
-import { generateAccessToken } from '../utils/tokens/token.js';
+import { generateAccessToken } from '../utils/token.js';
 
 export const refreshToken = async (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;

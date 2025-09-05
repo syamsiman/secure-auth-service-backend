@@ -1,22 +1,20 @@
 import jwt from "jsonwebtoken";
 import { prisma } from "../client/index.js";
+import { ErrorResponse } from "../utils/custom-response/ErrorResponse.js";
 
 export const logout = async (req, res, next) => {
     // verify user is authenticated
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-        return res.status(401).json({
-            status: "fail",
-            message: 'user already logged out'
-        });
+        throw new ErrorResponse(401, 'no token provided')
     }
 
     try {
          
-        const decoded = jwt.verify(refreshToken, process.env.ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
-        console.log(decoded.id);
+        console.log(decoded);
         // delete the refresh token from the database
         await prisma.refreshToken.deleteMany({
             where: { userId: decoded.id }

@@ -3,20 +3,26 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Cookies from 'js-cookie'
+import Api from "../services/api";
 
 export default function SidebarMenu() {
 
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
 
     const { setIsAuthenticated } = useContext(AuthContext)
 
-    const logout = () => {
-        Cookies.remove("token");
-        Cookies.remove("user");
-
-        setIsAuthenticated(false)
-
-        Navigate("/login", { replace: true })
+    const logout = async () => {
+        Cookies.remove("token")
+        Cookies.remove("user")
+        try {
+            const response = await Api.post("/api/auth/logout");
+            
+            console.log(response);
+            setIsAuthenticated(false)
+            navigate("/login", { replace: true })
+        } catch (error) {
+            console.log(error);   
+        }
     }
 
 
